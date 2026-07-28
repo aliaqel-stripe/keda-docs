@@ -87,6 +87,7 @@ The KEDA operator provides these command-line flags for tuning the shared HTTP c
 | `http-max-idle-conns` | `0` | Maximum number of idle HTTP connections across all hosts. Zero means no limit. |
 | `http-max-idle-conns-per-host` | `1000` | Maximum number of idle HTTP connections retained per host. Zero uses Go's default of two. |
 | `http-idle-conn-timeout` | `90s` | Maximum time an idle HTTP connection remains in the pool. Zero disables the timeout. |
+| `http-disable-keep-alive` | `false` | Disable HTTP keep-alive connections. |
 
 The connection-pool flags can be configured through `extraArgs.keda`, for example:
 
@@ -104,14 +105,17 @@ All applicable scalers use these settings. Per-scaler connection-pool settings a
 
 Keep alive behaviour is enabled by default for every HTTP connection.
 
-You can disable keep alive for every HTTP connection by adding the relevant environment variable to both the KEDA Operator and KEDA Metrics Server deployments:
+Helm users can disable keep-alive with the existing setting:
 
 ```yaml
-- env:
-    KEDA_HTTP_DISABLE_KEEP_ALIVE: true
+http:
+  keepAlive:
+    enabled: false
 ```
 
 All applicable scalers use this keep alive behaviour. Setting per-scaler keep alive behaviour is currently unsupported.
+
+> ⚠️ `KEDA_HTTP_DISABLE_KEEP_ALIVE` is deprecated as of KEDA v2.21 and will be removed in v2.23. Use `--http-disable-keep-alive` instead. If both are configured, the command-line flag takes precedence.
 
 ## HTTP Proxies
 
